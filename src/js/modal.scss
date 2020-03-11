@@ -1,0 +1,156 @@
+.non-select {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.rtbsn-active {
+  overflow: hidden !important;
+}
+
+.rtbsn-wrap {
+  all: unset;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+
+  [class^="rtbsn-"] {
+    all: initial;
+    box-sizing: border-box;
+  }
+
+  &.rtbsn-mask {
+    background-color: rgba(0, 0, 0, 0.66);
+  }
+
+  .rtbsn-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .rtbsn-body {
+    position: relative;
+    width: 100%;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    a {
+      cursor: pointer;
+
+      * {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .rtbsn-main {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .rtbsn-close {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    @extend .non-select;
+
+    .rtbsn-close-icon {
+      font-size: 23px;
+      font-weight: 500;
+      color: #9c9c9c;
+      pointer-events: none;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+
+      .rtbsn-close-icon {
+        color: #000;
+      }
+    }
+  }
+}
+
+.rtbsn-wrap.rtbsn-unclosable .rtbsn-close {
+  display: none;
+}
+
+.rtbsn-wrap {
+  z-index: -9999;
+  opacity: 0;
+  overflow: hidden;
+
+  .rtbsn-container {
+    transition: 0.2s;
+    opacity: 0;
+  }
+
+  &.rtbsn-open {
+    overflow-y: auto;
+  }
+}
+
+.rtbsn-wrap.rtbsn-wrap--fit-content {
+  width: initial;
+}
+
+// animation style popup
+.rtbsn-wrap.rtbsn-ani-popup {
+  transition: 0.15s;
+
+  .rtbsn-container {
+    transition: 0.15s;
+    transform: scale(0.9);
+  }
+}
+
+.rtbsn-wrap.rtbsn-ani-popup.rtbsn-open {
+  z-index: 999999;
+  opacity: 1;
+
+  .rtbsn-container {
+    transition: 0.3s;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// animation style slideup
+.rtbsn-wrap.rtbsn-ani-slideup {
+  transition: 0.13s;
+
+  .rtbsn-container {
+    transition: 0.3s;
+    margin-top: 50px;
+  }
+}
+
+.rtbsn-wrap.rtbsn-ani-slideup.rtbsn-open {
+  z-index: 999999;
+  opacity: 1;
+
+  .rtbsn-container {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
