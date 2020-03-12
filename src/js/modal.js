@@ -38,7 +38,6 @@ export default function RTBanner(config = {}) {
     maskClosable = true,
     escClosable = true,
     maxWidth = null,
-    widthFitContent = false,
     classContainer = ""
   } = config;
 
@@ -49,7 +48,6 @@ export default function RTBanner(config = {}) {
   this.content = content;
   this.closable = closable;
   this.maxWidth = maxWidth;
-  this.widthFitContent = widthFitContent;
   this.classContainer = classContainer;
 
   this.init();
