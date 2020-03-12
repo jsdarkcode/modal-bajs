@@ -23,7 +23,7 @@ const modal = ModalBaJS({
 Manually opens a modal
 
 ```js
-const modal.show()
+modal.show();
 ```
 
 ### hide()
@@ -31,13 +31,13 @@ const modal.show()
 Manually hides a modal
 
 ```js
-const modal.hide()
+modal.hide();
 ```
 
 ### setContent()
 
 ```js
-const modal.setContent("<b>New content here</b>")
+modal.setContent("<b>New content here</b>");
 ```
 
 ### update()
@@ -45,11 +45,11 @@ const modal.setContent("<b>New content here</b>")
 Manually update options a modal
 
 ```js
-const modal.update({
-    animation: "slideup",
-    maxWidth: 300,
-    closable: false
-})
+modal.update({
+  animation: "slideup",
+  maxWidth: 300,
+  closable: false
+});
 ```
 
 ## Optional parameters
