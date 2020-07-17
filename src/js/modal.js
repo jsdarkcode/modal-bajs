@@ -41,6 +41,7 @@ export default function RTBanner(config = {}) {
     classContainer = "",
   } = config;
 
+  this.app = undefined;
   this.mask = mask;
   this.maskClosable = maskClosable;
   this.escClosable = escClosable;
@@ -58,23 +59,29 @@ RTBanner.prototype.init = function(callback) {
   const clsMask = this.mask ? 'rtbsn-mask' : '';
   const clsAnimation = this.animation ? this.animation : '';
   const clsClosable = this.closable ? '' : 'rtbsn-unclosable';
-  const classContainer = this.classContainer ? '' : '';
-
+  const classContainer = this.classContainer ? this.classContainer : '';
+  
   const el = `
-      <div id="rtbsn" class="rtbsn-wrap ${clsClosable} ${clsMask} rtbsn-ani-${clsAnimation} ${classContainer}">
-          <div class="rtbsn-container" style="max-width: ${this.maxWidth};">
-              <div class="rtbsn-body">
-                  <div class="rtbsn-close" data="rtbsn-close"><div class="rtbsn-close-icon">&times;</div></div>
-                  <div class="rtbsn-main" id="rtbsn-main">${this.content}</div>
-              </div>
-          </div>
-      </div>
+    <div class="rtbsn-wrap ${clsClosable} ${clsMask} rtbsn-ani-${clsAnimation} ${classContainer}">
+        <div class="rtbsn-container" style="max-width: ${this.maxWidth};">
+            <div class="rtbsn-body">
+                <div class="rtbsn-close" data="rtbsn-close"><div class="rtbsn-close-icon">&times;</div></div>
+                <div class="rtbsn-main">${this.content}</div>
+            </div>
+        </div>
+    </div>
   `;
+
+  const div = document.createElement("div");
+  div.classList.add('rtbns-modal');
+
+  div.insertAdjacentHTML('beforeend', el);
 
   const elBody = document.querySelector('body');
   const elBanner = document.getElementById('rtbsn');
   if (elBanner) return;
-  elBody.insertAdjacentHTML('beforeend', el);
+  elBody.insertAdjacentElement('beforeend', div);
+  this.app = div;
 
   // init methods
   this.bindEventClose();
@@ -85,9 +92,8 @@ RTBanner.prototype.init = function(callback) {
 };
 
 RTBanner.prototype.setContent = function (content = null, callback) {
-  const elBanner = document.getElementById("rtbsn");
-  if (!elBanner) this.init();
-  const elMain = document.getElementById("rtbsn-main");
+  if (!this.app) this.init();
+  const elMain = this.app.querySelector(".rtbsn-main");
   if (!elMain) return;
   this.content = content;
   elMain.innerHTML = content;
@@ -95,9 +101,8 @@ RTBanner.prototype.setContent = function (content = null, callback) {
 };
 
 RTBanner.prototype.update = function (config = {}, callback) {
-  const elBanner = document.getElementById("rtbsn");
-  if (!elBanner) this.init();
-  const elMain = document.getElementById("rtbsn-main");
+  if (!this.app) this.init();
+  const elMain = this.app.querySelector(".rtbsn-main");
   if (!elMain) return;
   const keysRTBanner = Object.keys(this);
   Object.entries(config).forEach(([key, value]) => {
@@ -106,7 +111,7 @@ RTBanner.prototype.update = function (config = {}, callback) {
     }
   });
 
-  elBanner.remove();
+  this.app.remove();
   this.init(function () {
     callback && callback();
   });
@@ -114,7 +119,7 @@ RTBanner.prototype.update = function (config = {}, callback) {
 
 RTBanner.prototype.show = function () {
   document.querySelector("body").classList.add("rtbsn-active");
-  const elBanner = document.getElementById("rtbsn");
+  const elBanner = this.app;
   if (!elBanner) return;
   elBanner.classList.add("rtbsn-open");
 
@@ -124,14 +129,19 @@ RTBanner.prototype.show = function () {
 };
 
 RTBanner.prototype.hide = function () {
-  const elBanner = document.getElementById("rtbsn");
+  const elBanner = this.app;
   if (!elBanner) return;
+
+  const elsModal = document.querySelectorAll(".rtbsn-open");
+  if (elsModal.length === 1) {
+    document.querySelector("body").classList.remove("rtbsn-active");
+  }
+
   elBanner.classList.remove("rtbsn-open");
-  document.querySelector("body").classList.remove("rtbsn-active");
 };
 
 RTBanner.prototype.bindStatusTransition = function () {
-  const elBanner = document.getElementById("rtbsn");
+  const elBanner = this.app;
   if (!elBanner) return;
 
   elBanner.addEventListener("transitionend", function () {
@@ -147,26 +157,31 @@ RTBanner.prototype.bindStatusTransition = function () {
 
 RTBanner.prototype.bindEventClose = function () {
   const self = this;
-  const elBanner = document.getElementById("rtbsn");
-  if (!elBanner) return;
+  if (!this.app) return;
 
-  // prettier-ignore
-  window.addEventListener("click", function(e) {
-      const el = e.target;
-      const attrClose = el.getAttribute("data", "");
-      const isMaskClosable = self.mask && self.maskClosable && !el.closest(".rtbsn-main")
-      // const isMaskClosable = self.mask && self.maskClosable && el.classList && el.classList.contains("rtbsn-wrap")
+  const elsClose = this.app.querySelectorAll('[data="rtbsn-close"');
+  [...elsClose].forEach((item) =>
+    item.addEventListener("click", function () {
+      self.hide();
+    })
+  );
 
-      if (attrClose === "rtbsn-close" || isMaskClosable) {
-          self.hide();
-      }
-  });
+  if (self.mask && self.maskClosable) {
+    const mask = this.app.querySelector(".rtbsn-mask");
+    if (mask) {
+      this.app.addEventListener("click", function (e) {
+        const el = e.target;
+        const elMask = !el.closest(".rtbsn-main");
+        elMask && self.hide();
+        console.log(e.target);
+      });
+    }
+  }
 };
 
 RTBanner.prototype.bindEventKey = function () {
   const self = this;
-  const elBanner = document.getElementById("rtbsn");
-  if (!elBanner) return;
+  if (!this.app) return;
 
   window.addEventListener("keyup", function (e) {
     switch (e.keyCode) {
