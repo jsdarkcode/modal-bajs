@@ -38,7 +38,7 @@ export default function RTBanner(config = {}) {
     maskClosable = true,
     escClosable = true,
     maxWidth = null,
-    classContainer = ""
+    classContainer = "",
   } = config;
 
   this.mask = mask;
@@ -84,7 +84,7 @@ RTBanner.prototype.init = function(callback) {
   callback && callback();
 };
 
-RTBanner.prototype.setContent = function(content = null, callback) {
+RTBanner.prototype.setContent = function (content = null, callback) {
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) this.init();
   const elMain = document.getElementById("rtbsn-main");
@@ -94,7 +94,7 @@ RTBanner.prototype.setContent = function(content = null, callback) {
   callback && callback();
 };
 
-RTBanner.prototype.update = function(config = {}, callback) {
+RTBanner.prototype.update = function (config = {}, callback) {
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) this.init();
   const elMain = document.getElementById("rtbsn-main");
@@ -107,12 +107,12 @@ RTBanner.prototype.update = function(config = {}, callback) {
   });
 
   elBanner.remove();
-  this.init(function() {
+  this.init(function () {
     callback && callback();
   });
 };
 
-RTBanner.prototype.show = function() {
+RTBanner.prototype.show = function () {
   document.querySelector("body").classList.add("rtbsn-active");
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) return;
@@ -123,18 +123,18 @@ RTBanner.prototype.show = function() {
   elContainer.style.width = elBajs ? "100%" : "initial";
 };
 
-RTBanner.prototype.hide = function() {
+RTBanner.prototype.hide = function () {
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) return;
   elBanner.classList.remove("rtbsn-open");
   document.querySelector("body").classList.remove("rtbsn-active");
 };
 
-RTBanner.prototype.bindStatusTransition = function() {
+RTBanner.prototype.bindStatusTransition = function () {
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) return;
 
-  elBanner.addEventListener("transitionend", function() {
+  elBanner.addEventListener("transitionend", function () {
     const isBannerShow = elBanner.classList.contains("rtbsn-open");
 
     if (isBannerShow) {
@@ -145,15 +145,17 @@ RTBanner.prototype.bindStatusTransition = function() {
   });
 };
 
-RTBanner.prototype.bindEventClose = function() {
+RTBanner.prototype.bindEventClose = function () {
   const self = this;
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) return;
 
   // prettier-ignore
   window.addEventListener("click", function(e) {
-      const attrClose = e.target.getAttribute("data", "");
-      const isMaskClosable = self.mask && self.maskClosable && e.target.classList && e.target.classList.contains("rtbsn-wrap")
+      const el = e.target;
+      const attrClose = el.getAttribute("data", "");
+      const isMaskClosable = self.mask && self.maskClosable && !el.closest(".rtbsn-main")
+      // const isMaskClosable = self.mask && self.maskClosable && el.classList && el.classList.contains("rtbsn-wrap")
 
       if (attrClose === "rtbsn-close" || isMaskClosable) {
           self.hide();
@@ -161,12 +163,12 @@ RTBanner.prototype.bindEventClose = function() {
   });
 };
 
-RTBanner.prototype.bindEventKey = function() {
+RTBanner.prototype.bindEventKey = function () {
   const self = this;
   const elBanner = document.getElementById("rtbsn");
   if (!elBanner) return;
 
-  window.addEventListener("keyup", function(e) {
+  window.addEventListener("keyup", function (e) {
     switch (e.keyCode) {
       case 27:
         self.escClosable && self.hide();
