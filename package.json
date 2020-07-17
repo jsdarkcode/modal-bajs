@@ -1,6 +1,6 @@
 {
   "name": "modal-bajs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Show modal dialog so easy",
   "main": "./src/index.js",
   "scripts": {
